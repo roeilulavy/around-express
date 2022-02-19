@@ -3,7 +3,6 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 
-
 router.get("/", (req, res) => {
   const dataPath = path.join(__dirname, '../data/users.json');
 
