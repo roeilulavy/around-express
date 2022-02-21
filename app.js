@@ -1,5 +1,8 @@
 const express = require('express');
+const helmet = require("helmet");
+
 const app = express();
+app.use(helmet());
 
 const { PORT = 3000 } = process.env;
 
