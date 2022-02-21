@@ -17,5 +17,5 @@ app.get('/*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`App listening at port ${PORT}`);
+  console.log(`App listening at port ${PORT}`); // eslint-disable-line no-console
 });
