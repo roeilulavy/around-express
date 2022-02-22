@@ -3,10 +3,9 @@ const fs = require('fs');
 const path = require('path');
 
 const router = express.Router();
+const dataPath = path.join(__dirname, '..', 'data', 'users.json');
 
 router.get('/', (req, res) => {
-  const dataPath = path.join(__dirname, '../data/users.json');
-
   fs.readFile(dataPath, { encoding: 'utf8' }, (err, data) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
@@ -20,7 +19,6 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const id = req.params;
-  const dataPath = path.join(__dirname, '../data/users.json');
 
   fs.readFile(dataPath, { encoding: 'utf8' }, (err, data) => {
     if (err) {
