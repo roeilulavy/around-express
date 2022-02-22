@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  const id = req.params;
+  const id = req.params.id;
 
   fs.readFile(dataPath, { encoding: 'utf8' }, (err, data) => {
     if (err) {
