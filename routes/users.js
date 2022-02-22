@@ -1,13 +1,9 @@
 const express = require('express');
-<<<<<<< HEAD
-=======
 const router = express.Router();
 const fs = require('fs');
->>>>>>> parent of 2e21527 (lint fix)
 const path = require('path');
 const { getJsonFromFile } = require('../helpers/files');
 
-<<<<<<< HEAD
 const router = express.Router();
 const usersPath = path.join(__dirname, '..', 'data', 'users.json');
 
@@ -27,8 +23,8 @@ router.get('/:id', (req, res) => {
     res.status(404).send({ message: 'User ID not found' });
   }
   console.log(user);
-=======
-router.get("/", (req, res) => {
+
+  router.get("/", (req, res) => {
   const dataPath = path.join(__dirname, '../data/users.json');
 
   fs.readFile(dataPath, {encoding: 'utf8'}, (err, data) => {
@@ -60,7 +56,6 @@ router.get("/:id", (req, res) => {
       res.status(404).send({ "message": "User ID not found" });
     }
   });
->>>>>>> parent of 2e21527 (lint fix)
 });
 
 module.exports = router;
