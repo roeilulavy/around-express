@@ -6,6 +6,7 @@ const { getJsonFromFile } = require('../helpers/files');
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 const router = express.Router();
 const usersPath = path.join(__dirname, '..', 'data', 'users.json');
 
@@ -27,6 +28,9 @@ router.get('/:id', (req, res) => {
   console.log(user);
 
   router.get("/", (req, res) => {
+=======
+router.get("/", (req, res) => {
+>>>>>>> parent of 2e21527 (lint fix)
 =======
 router.get("/", (req, res) => {
 >>>>>>> parent of 2e21527 (lint fix)
