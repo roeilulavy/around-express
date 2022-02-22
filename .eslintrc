@@ -4,6 +4,7 @@
     "no-underscore-dangle": ["off", { "allow": ["id"] }],
     "no-console": 1,
     "eol-last": ["error", "always"],
+    "arrow-body-style": ["error", "never", { "requireReturnForObjectLiteral": false }],
     "no-restricted-syntax": [
       "error",
       {
