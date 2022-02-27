@@ -32,7 +32,6 @@ const getUserById = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
-  console.log(req.body);
   try {
     const { name, about, avatar } = req.body;
 
