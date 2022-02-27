@@ -16,7 +16,6 @@ module.exports.getUsers = async (req, res) => {
 module.exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    console.log(req.user._id);
     if (!user) {
       res
         .status(404)
