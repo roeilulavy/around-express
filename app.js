@@ -1,9 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 
 const app = express();
 app.use(helmet());
+app.use(bodyParser.json());
 
 const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/aroundb');

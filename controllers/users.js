@@ -1,6 +1,6 @@
 const { getJsonFromFile } = require('../helpers/files');
 const path = require('path');
-
+const User = require('../models/user');
 
 const dataPath = path.join(__dirname, '..', 'data', 'users.json');
 
@@ -31,7 +31,26 @@ const getUserById = async (req, res) => {
   }
 }
 
+const createUser = async (req, res) => {
+  console.log(req.body);
+  try {
+    const { name, about, avatar } = req.body;
+
+    const newUser = await User.create({name, about, avatar});
+
+    if(!newUser) {
+      res.status(500).send({ message: 'An error has occurred on the server - Else Error' });
+    }
+
+    res.send(newUser);
+  } catch (err) {
+    console.log(err); // eslint-disable-line no-console
+    res.status(500).send({ message: 'An error has occurred on the server - Catch Error' });
+  }
+}
+
 module.exports = {
   getUsers,
-  getUserById
+  getUserById,
+  createUser
 }
