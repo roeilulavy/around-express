@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 const dataPath = path.join(__dirname, '..', 'data', 'users.json');
 
-const getUsers = async (req, res) => {
+module.exports.getUsers = async (req, res) => {
   try {
     const users = await getJsonFromFile(dataPath);
 
@@ -15,7 +15,7 @@ const getUsers = async (req, res) => {
   }
 }
 
-const getUserById = async (req, res) => {
+module.exports.getUserById = async (req, res) => {
   try {
     const usersList = await getJsonFromFile(dataPath);
     const user = usersList.find((users) => users._id === req.params.user_id);
@@ -31,7 +31,7 @@ const getUserById = async (req, res) => {
   }
 }
 
-const createUser = async (req, res) => {
+module.exports.createUser = async (req, res) => {
   try {
     const { name, about, avatar } = req.body;
 
@@ -46,10 +46,4 @@ const createUser = async (req, res) => {
     console.log(err); // eslint-disable-line no-console
     res.status(500).send({ message: 'An error has occurred on the server - Catch Error' });
   }
-}
-
-module.exports = {
-  getUsers,
-  getUserById,
-  createUser
 }
