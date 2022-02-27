@@ -40,8 +40,8 @@ module.exports.createUser = async (req, res) => {
 
     if (!newUser) {
       res
-        .status(500)
-        .send({ message: 'An error has occurred on the server - Else Error' });
+        .status(400)
+        .send({ message: 'Invalid data passed to the methods for creating a user' });
     }
 
     res.send(newUser);
@@ -51,4 +51,5 @@ module.exports.createUser = async (req, res) => {
       .status(500)
       .send({ message: 'An error has occurred on the server - Catch Error' });
   }
+
 }
