@@ -1,10 +1,12 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const helmet = require('helmet');
 
 const app = express();
 app.use(helmet());
 
 const { PORT = 3000 } = process.env;
+mongoose.connect('mongodb://localhost:27017/aroundb');
 
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
