@@ -1,12 +1,8 @@
-const { getJsonFromFile } = require('../helpers/files');
-const path = require('path');
 const Card = require('../models/card');
-
-const dataPath = path.join(__dirname, "..", "data", "cards.json");
 
 module.exports.getCards = async (req, res) => {
   try {
-    const cards = await getJsonFromFile(dataPath);
+    const cards = await Card.find();
     res.send(cards);
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
