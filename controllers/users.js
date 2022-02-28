@@ -45,7 +45,7 @@ module.exports.createUser = async (req, res) => {
     console.log(err); // eslint-disable-line no-console
     res
       .status(500)
-      .send({ message: "An error has occurred on the server - Catch Error" });
+      .send({ message: "An error has occurred on the server" });
   }
 };
 
@@ -71,7 +71,7 @@ module.exports.updateProfile = async (req, res) => {
     console.log(err); // eslint-disable-line no-console
     res
       .status(500)
-      .send({ message: "An error has occurred on the server - Catch Error" });
+      .send({ message: "An error has occurred on the server" });
   }
 }
 
@@ -97,6 +97,6 @@ module.exports.updateAvatar = async (req, res) => {
     console.log(err); // eslint-disable-line no-console
     res
       .status(500)
-      .send({ message: "An error has occurred on the server - Catch Error" });
+      .send({ message: "An error has occurred on the server" });
   }
 }
