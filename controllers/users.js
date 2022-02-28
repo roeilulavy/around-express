@@ -81,7 +81,7 @@ module.exports.updateAvatar = async (req, res) => {
     const updateAvatar = await User.findByIdAndUpdate(
       req.user._id,
       { avatar },
-      {new: true}
+      {new: true},
     )
 
     if (!updateAvatar) {
