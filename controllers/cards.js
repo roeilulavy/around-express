@@ -18,8 +18,8 @@ module.exports.createCard = async (req, res) => {
 
     if (!newCard) {
       res
-        .status(500)
-        .send({ message: "An error has occurred on the server - Else Error" });
+        .status(400)
+        .send({ message: "invalid data passed to the methods for creating a card" });
     }
 
     res.send(newCard);
@@ -35,8 +35,8 @@ module.exports.deleteCard = async (req, res) => {
 
     if (!deleteCard) {
       res
-        .status(500)
-        .send({ message: "An error has occurred on the server - Else Error" });
+        .status(404)
+        .send({ message: "Card not found" });
     }
 
     res.send(deleteCard);
@@ -56,8 +56,8 @@ module.exports.likeCard = async (req, res) => {
 
     if (!like) {
       res
-        .status(500)
-        .send({ message: "An error has occurred on the server - Else Error" });
+        .status(404)
+        .send({ message: "Card not found" });
     }
 
     res.send(like);
@@ -77,8 +77,8 @@ module.exports.dislikeCard = async (req, res) => {
 
     if (!dislike) {
       res
-        .status(500)
-        .send({ message: "An error has occurred on the server - Else Error" });
+        .status(404)
+        .send({ message: "Card not found" });
     }
 
     res.send(dislike);
