@@ -31,7 +31,7 @@ module.exports.createCard = async (req, res) => {
 
 module.exports.deleteCard = async (req, res) => {
   try {
-    const deleteCard = await Card.findByIdAndRemove(req.params.id);
+    const deleteCard = await Card.findByIdAndRemove(req.params.cardId);
 
     if (!deleteCard) {
       res
