@@ -3,6 +3,7 @@ const Card = require("../models/card");
 module.exports.getCards = async (req, res) => {
   try {
     const cards = await Card.find();
+
     res.send(cards);
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
