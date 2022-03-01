@@ -1,22 +1,6 @@
 {
   "extends": "airbnb-base",
   "rules": {
-    "no-underscore-dangle": ["off", { "allow": ["id"] }],
-    "no-console": 1,
-    "eol-last": ["error", "always"],
-    "arrow-body-style": ["error", "never", { "requireReturnForObjectLiteral": false }],
-    "no-restricted-syntax": [
-      "error",
-      {
-        "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(log|warn|error|info|trace)$/]",
-        "message": "Unexpected property on console object was called"
-      }
-    ],
-    "prefer-destructuring": ["error", {
-      "array": false,
-      "object": false
-    }, {
-      "enforceForRenamedProperties": false
-    }]
+     "no-underscore-dangle":  ["off", { "allow": ["id"] }]
   }
 }
