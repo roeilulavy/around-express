@@ -6,8 +6,7 @@ module.exports.getUsers = async (req, res) => {
 
     res.send(users);
   } catch (err) {
-    console.log(err); // eslint-disable-line no-console
-    res.status(500).send({ message: 'An error has occurred on the server' });
+    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
   }
 };
 
@@ -21,8 +20,7 @@ module.exports.getUserById = async (req, res) => {
 
     res.send(user);
   } catch (err) {
-    console.log(err); // eslint-disable-line no-console
-    res.status(500).send({ message: 'An error has occurred on the server' });
+    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
   }
 };
 

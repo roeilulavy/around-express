@@ -6,8 +6,7 @@ module.exports.getCards = async (req, res) => {
 
     res.send(cards);
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: 'An error has occurred on the server' });
+    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
   }
 };
 
@@ -41,8 +40,7 @@ module.exports.deleteCard = async (req, res) => {
 
     res.send(deleteCard);
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: 'An error has occurred on the server' });
+    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
   }
 };
 
@@ -60,8 +58,7 @@ module.exports.likeCard = async (req, res) => {
 
     res.send(like);
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: 'An error has occurred on the server' });
+    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
   }
 };
 
@@ -79,7 +76,6 @@ module.exports.dislikeCard = async (req, res) => {
 
     res.send(dislike);
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: 'An error has occurred on the server' });
+    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
   }
 };
