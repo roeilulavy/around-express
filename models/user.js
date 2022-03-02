@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
+
+const regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'*+,;=.]+$/;
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -21,8 +22,8 @@ const userSchema = new mongoose.Schema({
       validator(v) {
         return v.match(regex);
       },
-      message: 'The link must be valid'
-    }
+      message: 'The link must be valid',
+    },
   },
 });
 

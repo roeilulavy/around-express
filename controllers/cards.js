@@ -1,4 +1,4 @@
-const Card = require("../models/card");
+const Card = require('../models/card');
 
 module.exports.getCards = async (req, res) => {
   try {
@@ -7,7 +7,7 @@ module.exports.getCards = async (req, res) => {
     res.send(cards);
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: "An error has occurred on the server" });
+    res.status(500).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -20,13 +20,13 @@ module.exports.createCard = async (req, res) => {
     if (!newCard) {
       res
         .status(400)
-        .send({ message: "invalid data passed to the methods for creating a card" });
+        .send({ message: 'invalid data passed to the methods for creating a card' });
     }
 
     res.send(newCard);
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: "An error has occurred on the server" });
+    res.status(500).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -37,13 +37,13 @@ module.exports.deleteCard = async (req, res) => {
     if (!deleteCard) {
       res
         .status(404)
-        .send({ message: "Card not found" });
+        .send({ message: 'Card not found' });
     }
 
     res.send(deleteCard);
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: "An error has occurred on the server" });
+    res.status(500).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -52,19 +52,19 @@ module.exports.likeCard = async (req, res) => {
     const like = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
-      { new: true }
+      { new: true },
     );
 
     if (!like) {
       res
         .status(404)
-        .send({ message: "Card not found" });
+        .send({ message: 'Card not found' });
     }
 
     res.send(like);
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: "An error has occurred on the server" });
+    res.status(500).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -73,18 +73,18 @@ module.exports.dislikeCard = async (req, res) => {
     const dislike = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
-      { new: true }
+      { new: true },
     );
 
     if (!dislike) {
       res
         .status(404)
-        .send({ message: "Card not found" });
+        .send({ message: 'Card not found' });
     }
 
     res.send(dislike);
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
-    res.status(500).send({ message: "An error has occurred on the server" });
+    res.status(500).send({ message: 'An error has occurred on the server' });
   }
 };

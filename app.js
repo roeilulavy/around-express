@@ -10,9 +10,9 @@ app.use(bodyParser.json());
 const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/aroundb');
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB Connection Error: "));
-db.once("open", function () {
-  console.log("MongoDB Connected successfully");
+db.on('error', console.error.bind(console, 'MongoDB Connection Error: ')); // eslint-disable-line no-console
+db.once('open', () => {
+  console.log('MongoDB Connected successfully'); // eslint-disable-line no-console
 });
 
 const userRouter = require('./routes/users');
@@ -20,7 +20,7 @@ const cardsRouter = require('./routes/cards');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '621b5c29207c59a9c3067902'
+    _id: '621b5c29207c59a9c3067902',
   };
   next();
 });
