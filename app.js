@@ -3,28 +3,26 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 
+const PORT = process.env.PORT || 3000;
 const app = express();
+
 app.use(helmet());
 app.use(bodyParser.json());
 
-const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/aroundb');
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB Connection Error: "));
-db.once("open", function () {
-  console.log("MongoDB Connected successfully");
-});
+mongoose.connection.once('error', () => console.error.bind(console, 'MongoDB Connection Error: '));// eslint-disable-line no-console
 
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '621b5c29207c59a9c3067902'
+    _id: '621b5c29207c59a9c3067902',
   };
   next();
 });
 
+// routes
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
 
@@ -32,6 +30,7 @@ app.get('/*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`App listening at port ${PORT}`); // eslint-disable-line no-console
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB');// eslint-disable-line no-console
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));// eslint-disable-line no-console
 });
