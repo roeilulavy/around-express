@@ -1,4 +1,14 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+
+const VALIDATION_ERROE = 400;
+const UNAUTHORIZED_ERROE = 401;
+const NOTFOUND_ERROE = 404;
+const DEFAULT_ERROE = 500;
+
+module.exports.login = async (req, res) => {
+
+};
 
 module.exports.getUsers = async (req, res) => {
   try {
@@ -28,9 +38,13 @@ module.exports.getUserById = async (req, res) => {
 
 module.exports.createUser = async (req, res) => {
   try {
-    const { name, about, avatar } = req.body;
+    const {
+      email, password, name, about, avatar,
+    } = req.body;
 
-    const newUser = await User.create({ name, about, avatar });
+    const newUser = await User.create({
+      email, password, name, about, avatar,
+    });
 
     if (!newUser) {
       res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' });

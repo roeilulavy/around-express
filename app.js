@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const auth = require('./middleware/auth');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
