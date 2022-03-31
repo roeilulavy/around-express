@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+const emailValidator = require('validator');
 
 const regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'*+,;=.]+$/;
 
@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator(v) {
+        return emailValidator.isEmail(v);
+      },
+    },
   },
   password: {
     type: String,
