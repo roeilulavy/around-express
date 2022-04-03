@@ -18,7 +18,7 @@ module.exports.login = async (req, res) => {
       res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
     }
 
-    const login = await User.findOne({ email });
+    const login = await User.findOne({ email }).select('+password');
 
     if (!login) {
       res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' });
@@ -48,7 +48,7 @@ module.exports.createUser = async (req, res) => {
       res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }.select('+password'));
 
     if (user) {
       res.status(CONFLICT).send({ message: 'User already exist' });
