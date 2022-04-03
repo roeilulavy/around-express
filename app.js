@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimiter = require('express-rate-limit');
 const { login, createUser } = require('./controllers/users');
-const auth = require('./middleware/auth');
+// const auth = require('./middleware/auth');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -19,7 +19,7 @@ const limiter = rateLimiter({
 app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
-app.use(auth);
+// app.use(auth);
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 mongoose.connection.once('error', () => console.error.bind(console, 'MongoDB Connection Error: '));// eslint-disable-line no-console

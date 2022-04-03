@@ -1,35 +1,91 @@
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { getToken, isAuthorized } = require('../utils/jwt');
 const User = require('../models/user');
+
+const SALT_ROUNDS = 10;
 
 const VALIDATION_ERROE = 400;
 const UNAUTHORIZED_ERROE = 401;
 const NOTFOUND_ERROE = 404;
-const DEFAULT_ERROE = 500;
+const CONFLICT = 409;
+const SERVER_ERROE = 500;
 
 module.exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const login = await User.findOne(email, password);
-
-    if (!login) {
-      res.status(UNAUTHORIZED_ERROE).send({ message: 'User Email or Password not found' });
+    if (!email || !password) {
+      res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
     }
 
-    res.send(login._id);
+    const login = await User.findOne({ email });
+
+    if (!login) {
+      res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' });
+    } else {
+      bcrypt.compare(password, login.password)
+        .then((isSame) => {
+          const token = getToken(email._id);
+          if (isSame) {
+            res.status(200).send({ token });
+          } else {
+            res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' });
+          }
+        });
+    }
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
+    res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+  }
+};
+
+module.exports.createUser = async (req, res) => {
+  try {
+    const {
+      email, password, name, about, avatar,
+    } = req.body;
+
+    if (!email || !password) {
+      res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (user) {
+      res.status(CONFLICT).send({ message: 'User already exist' });
+    }
+
+    const hashedPassword = bcrypt.hash(password, SALT_ROUNDS);
+
+    const newUser = await User.create({
+      email, password: hashedPassword, name, about, avatar,
+    });
+
+    if (!newUser) {
+      res.status(VALIDATION_ERROE).send({ message: 'Invalid data passed to the methods for creating a user' });
+    }
+
+    res.send(newUser);
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      res.status(VALIDATION_ERROE).send(err);
+    } else {
+      res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+    }
   }
 };
 
 module.exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const authorized = isAuthorized(req.headers.authorization);
 
-    res.send(users);
+    if (authorized) {
+      const users = await User.find({});
+      res.send(users);
+    } else {
+      res.status(NOTFOUND_ERROE).send({ message: 'User ID not found' });
+    }
   } catch (err) {
-    console.log(err); // eslint-disable-line no-console
-    res.status(DEFAULT_ERROE).send({ message: 'An error has occurred on the server' });
+    res.status(SERVER_ERROE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -43,32 +99,7 @@ module.exports.getUserById = async (req, res) => {
 
     res.send(user);
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    res.status(DEFAULT_ERROE).send({ message: 'An error has occurred on the server' });
-  }
-};
-
-module.exports.createUser = async (req, res) => {
-  try {
-    const {
-      email, password, name, about, avatar,
-    } = req.body;
-
-    const newUser = await User.create({
-      email, password, name, about, avatar,
-    });
-
-    if (!newUser) {
-      res.status(VALIDATION_ERROE).send({ message: 'Invalid data passed to the methods for creating a user' });
-    }
-
-    res.send(newUser);
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      res.status(VALIDATION_ERROE).send(err);
-    } else {
-      res.status(DEFAULT_ERROE).send({ message: `An error has occurred on the server: ${err}` });
-    }
+    res.status(SERVER_ERROE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -93,7 +124,7 @@ module.exports.updateProfile = async (req, res) => {
     if (err.name === 'ValidationError') {
       res.status(VALIDATION_ERROE).send(err);
     } else {
-      res.status(DEFAULT_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+      res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
     }
   }
 };
@@ -119,7 +150,7 @@ module.exports.updateAvatar = async (req, res) => {
     if (err.name === 'ValidationError') {
       res.status(VALIDATION_ERROE).send(err);
     } else {
-      res.status(DEFAULT_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+      res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
     }
   }
 };
