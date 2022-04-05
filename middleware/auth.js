@@ -2,14 +2,6 @@ const jwt = require('jsonwebtoken');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const handleAuthError = (res) => {
-  res
-    .status(401)
-    .send({ message: 'Authorization Error' });
-};
-
-const extractBearerToken = (header) => header.replace('Bearer ', '');
-
 const allowedCors = [
   'http://roy-server.students.nomoreparties.sbs',
   'https://roy-server.students.nomoreparties.sbs',
@@ -21,6 +13,14 @@ const allowedCors = [
 ];
 
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
+const handleAuthError = (res) => {
+  res
+    .status(401)
+    .send({ message: 'Authorization Error' });
+};
+
+const extractBearerToken = (header) => header.replace('Bearer ', '');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
