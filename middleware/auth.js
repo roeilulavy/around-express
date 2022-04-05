@@ -1,4 +1,14 @@
-const { isAuthorized } = require('../utils/jwt');
+const jwt = require('jsonwebtoken');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+const handleAuthError = (res) => {
+  res
+    .status(401)
+    .send({ message: 'Authorization Error' });
+};
+
+const extractBearerToken = (header) => header.replace('Bearer ', '');
 
 const allowedCors = [
   'http://roy-server.students.nomoreparties.sbs',
@@ -12,7 +22,7 @@ const allowedCors = [
 
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
-module.exports.auth = (req, res, next) => {
+module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   const { method } = req;
   const requestHeaders = req.headers['access-control-request-headers'];
@@ -28,16 +38,16 @@ module.exports.auth = (req, res, next) => {
   }
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    res.status(401).send({ message: 'Authorization Required' });
+    handleAuthError(res);
   }
 
-  const token = authorization.replace('Bearer', '');
+  const token = extractBearerToken(authorization);
   let payload;
 
   try {
-    payload = isAuthorized(token);
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (err) {
-    res.status(403).send({ message: 'Authorization Required' });
+    handleAuthError(res);
   }
 
   req.user = payload;

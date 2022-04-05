@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const jwtsecret = 'sdfgsdf;sdfsdfd;sfsdfsdf;sdf';
+const { NODE_ENV, JWT_SECRET } = process.env;
+
+const jwtsecret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
 
 const getToken = (userId) => jwt.sign({ id: userId }, jwtsecret, { expiresIn: '7d' });
 
