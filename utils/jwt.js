@@ -3,7 +3,7 @@ const User = require('../models/user');
 
 const jwtsecret = 'sdfgsdf;sdfsdfd;sfsdfsdf;sdf';
 
-const getToken = (userId) => jwt.sign({ id: userId }, jwtsecret);
+const getToken = (userId) => jwt.sign({ id: userId }, jwtsecret, { expiresIn: '7d' });
 
 const isAuthorized = (token) => {
   if (!token) {

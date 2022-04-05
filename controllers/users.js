@@ -18,15 +18,15 @@ module.exports.login = async (req, res) => {
       res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
     }
 
-    const login = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select('+password');
 
-    if (!login) {
+    if (!user) {
       res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' });
     } else {
-      bcrypt.compare(password, login.password)
-        .then((isSame) => {
-          const token = getToken(email._id);
-          if (isSame) {
+      bcrypt.compare(password, user.password)
+        .then((matched) => {
+          const token = getToken(user._id);
+          if (matched) {
             res.status(200).send({ token });
           } else {
             res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' });
@@ -48,7 +48,7 @@ module.exports.createUser = async (req, res) => {
       res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
     }
 
-    const user = await User.findOne({ email }.select('+password'));
+    const user = await User.findOne({ email }).select('+password');
 
     if (user) {
       res.status(CONFLICT).send({ message: 'User already exist' });

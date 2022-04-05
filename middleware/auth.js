@@ -1,3 +1,5 @@
+const { isAuthorized } = require('../utils/jwt');
+
 const allowedCors = [
   'http://roy-server.students.nomoreparties.sbs',
   'https://roy-server.students.nomoreparties.sbs',
@@ -11,12 +13,12 @@ const allowedCors = [
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
 module.exports.auth = (req, res, next) => {
-  const { origin } = req.headers;
+  const { authorization } = req.headers;
   const { method } = req;
   const requestHeaders = req.headers['access-control-request-headers'];
 
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
+  if (allowedCors.includes(authorization)) {
+    res.header('Access-Control-Allow-Origin', authorization);
   }
 
   if (method === 'OPTIONS') {
@@ -25,7 +27,20 @@ module.exports.auth = (req, res, next) => {
     res.end();
   }
 
-  // req.user = payload;
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return res.status(401).send({ message: 'Authorization Required' });
+  }
+
+  const token = authorization.replace('Bearer', '');
+  let payload;
+
+  try {
+    payload = isAuthorized(token);
+  } catch (err) {
+    return res.status(403).send({ message: 'Authorization Required' });
+  }
+
+  req.user = payload;
 
   next();
 };
