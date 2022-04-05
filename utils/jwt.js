@@ -14,7 +14,10 @@ const isAuthorized = (token) => {
 
   return User.findOne({ email: id })
     .then((user) => !!user)
-    .catch((err) => false);
+    .catch((err) => {
+      console.error(err); // eslint-disable-line no-console
+      Promise.resolve(false);
+    });
 };
 
 module.exports = { getToken, isAuthorized };

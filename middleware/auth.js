@@ -28,7 +28,7 @@ module.exports.auth = (req, res, next) => {
   }
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res.status(401).send({ message: 'Authorization Required' });
+    res.status(401).send({ message: 'Authorization Required' });
   }
 
   const token = authorization.replace('Bearer', '');
@@ -37,7 +37,7 @@ module.exports.auth = (req, res, next) => {
   try {
     payload = isAuthorized(token);
   } catch (err) {
-    return res.status(403).send({ message: 'Authorization Required' });
+    res.status(403).send({ message: 'Authorization Required' });
   }
 
   req.user = payload;
