@@ -10,18 +10,18 @@ const NOTFOUND_ERROE = 404;
 const CONFLICT = 409;
 const SERVER_ERROE = 500;
 
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
+      next(res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' }));
     }
 
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' });
+      next(res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' }));
     } else {
       bcrypt.compare(password, user.password)
         .then((matched) => {
@@ -34,7 +34,7 @@ module.exports.login = async (req, res) => {
         });
     }
   } catch (err) {
-    res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+    next(res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` }));
   }
 };
 
@@ -71,6 +71,26 @@ module.exports.createUser = async (req, res) => {
     } else {
       res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
     }
+  }
+};
+
+module.exports.getUserInfo = async (req, res, next) => {
+  const { id } = req.user;
+
+  try {
+    const user = await User.findOne({ id });
+
+    if (user) {
+      res.status(200).send(user);
+    } else if (user === null) {
+      next(res.status(NOTFOUND_ERROE).send({ message: 'User ID not found' }));
+    }
+  } catch (e) {
+    if (e.name === 'CastError') {
+      next(res.status(NOTFOUND_ERROE).send({ message: 'User ID not found' }));
+      return;
+    }
+    next(e);
   }
 };
 

@@ -1,10 +1,14 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const rateLimiter = require('express-rate-limit');
 const { login, createUser } = require('./controllers/users');
-const auth = require('./middleware/auth');
+const { auth } = require('./middleware/auth');
+const usersRouter = require('./routes/users');
+const cardsRouter = require('./routes/cards');
+
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
@@ -17,16 +21,19 @@ const limiter = rateLimiter({
   legacyHeaders: false,
 });
 
-app.use(limiter);
-app.use(helmet());
-app.use(bodyParser.json());
-app.use(auth);
-
 mongoose.connect('mongodb://localhost:27017/aroundb');
 mongoose.connection.once('error', () => console.error.bind(console, 'MongoDB Connection Error: '));// eslint-disable-line no-console
 
-const userRouter = require('./routes/users');
-const cardsRouter = require('./routes/cards');
+app.use(auth);
+app.use(limiter);
+app.use(helmet());
+app.use(bodyParser.json());
+
+app.use(cors());
+app.options('*', cors());
+app.disable('x-powered-by');
+
+// app.use(requestLogger);
 
 // app.use((req, res, next) => {
 //   req.user = {
@@ -38,12 +45,17 @@ const cardsRouter = require('./routes/cards');
 // routes
 app.post('/signin', login);
 app.post('/signup', createUser);
-app.use('/users', auth, userRouter);
-app.use('/cards', auth, cardsRouter);
+app.use('/users', usersRouter);
+app.use('/cards', cardsRouter);
 
 app.get('/*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
+
+// app.use(handleErrors);
+// app.use(errorLogger);
+
+// indexRouter.use(errors());
 
 mongoose.connection.once('open', () => {
   console.log('Connected to MongoDB');// eslint-disable-line no-console
