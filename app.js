@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const rateLimiter = require('express-rate-limit');
+const { celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middleware/auth');
 const usersRouter = require('./routes/users');
@@ -43,8 +44,20 @@ app.disable('x-powered-by');
 // });
 
 // routes
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(6),
+  }),
+}), login);
+
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(6),
+  }).unknown(true),
+}), createUser);
+
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
 
