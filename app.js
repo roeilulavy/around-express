@@ -45,8 +45,8 @@ app.disable('x-powered-by');
 // routes
 app.post('/signin', login);
 app.post('/signup', createUser);
-app.use('/users', usersRouter);
-app.use('/cards', cardsRouter);
+app.use('/users', auth, usersRouter);
+app.use('/cards', auth, cardsRouter);
 
 app.get('/*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
