@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const rateLimiter = require('express-rate-limit');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
-const { handleCores } = require('./middleware/cores');
+const { handleCors } = require('./middleware/cors');
 const { handleErrors } = require('./middleware/handleErrors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
@@ -14,7 +14,7 @@ const { auth } = require('./middleware/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 const limiter = rateLimiter({
@@ -31,7 +31,7 @@ app.use(errors());
 app.use(helmet());
 app.use(bodyParser.json());
 
-app.use(handleCores);
+app.use(handleCors);
 app.use(cors());
 app.options('*', cors());
 app.disable('x-powered-by');
