@@ -26,7 +26,6 @@ const limiter = rateLimiter({
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
-// app.use(auth);
 app.use(limiter);
 app.use(errors());
 app.use(helmet());
