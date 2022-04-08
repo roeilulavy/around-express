@@ -34,6 +34,7 @@ app.use(errors());
 app.use(helmet());
 app.use(bodyParser.json());
 
+// app.use(handleCors);
 app.use(cors());
 app.options('*', cors());
 app.disable('x-powered-by');
