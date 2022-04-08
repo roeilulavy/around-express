@@ -69,10 +69,10 @@ module.exports.createUser = async (req, res, next) => {
 };
 
 module.exports.getUserInfo = async (req, res, next) => {
-  const { id } = req.user;
+  const { _id } = req.user;
 
   try {
-    const user = await User.findOne({ id });
+    const user = await User.findOne({ _id });
 
     if (user) {
       res.status(200).send(user);
