@@ -9,7 +9,7 @@ const allowedCors = [
 ];
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
-function handleCors(req, res, next) {
+function handleCores(req, res, next) {
   const { origin } = req.headers;
   const { method } = req;
   const requestHeaders = req.headers['access-control-request-headers'];
@@ -26,4 +26,4 @@ function handleCors(req, res, next) {
   next();
 }
 
-module.exports = { handleCors };
+module.exports = { handleCores };
