@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.statics.findUserByCredentials = async function findUserByCredentials(email, password) {
   try {
+    console.log('User scheme runing auth');
     const user = await this.findOne({ email }).select('+password');
 
     if (!user) {

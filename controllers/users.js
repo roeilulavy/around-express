@@ -6,10 +6,11 @@ const SALT_ROUNDS = 10;
 
 module.exports.login = async (req, res, next) => {
   try {
-    console.log('Login');
     const { email, password } = req.body;
+    console.log(req.body);
 
     if (!email || !password) {
+      console.error('No Email or Password');
       next(res.status(400).send({ message: 'Invalid Email or Password' }));
     }
 
