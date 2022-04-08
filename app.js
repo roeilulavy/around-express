@@ -6,15 +6,13 @@ const bodyParser = require('body-parser');
 const rateLimiter = require('express-rate-limit');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
-// const { handleCors } = require('./middleware/cors');
+const { handleCors } = require('./middleware/cors');
 const { handleErrors } = require('./middleware/handleErrors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middleware/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-
-require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -34,7 +32,7 @@ app.use(errors());
 app.use(helmet());
 app.use(bodyParser.json());
 
-// app.use(handleCors);
+app.use(handleCors);
 app.use(cors());
 app.options('*', cors());
 app.disable('x-powered-by');

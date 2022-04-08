@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { getToken, isAuthorized } = require('../utils/jwt');
+const { getToken } = require('../utils/jwt');
 const User = require('../models/user');
 
 const SALT_ROUNDS = 10;
@@ -85,14 +85,9 @@ module.exports.getUserInfo = async (req, res, next) => {
 
 module.exports.getUsers = async (req, res, next) => {
   try {
-    const authorized = isAuthorized(req.headers.authorization);
+    const users = await User.find({});
 
-    if (authorized) {
-      const users = await User.find({});
-      res.send(users);
-    } else {
-      next(res.status(404).send({ message: 'User ID not found' }));
-    }
+    res.send(users);
   } catch (err) {
     next(res.status(500).send({ message: 'An error has occurred on the server' }));
   }

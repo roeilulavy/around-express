@@ -6,7 +6,6 @@ module.exports.getCards = async (req, res, next) => {
 
     res.send(cards);
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
     next(res.status(500).send({ message: 'An error has occurred on the server' }));
   }
 };
