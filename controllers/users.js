@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { getToken, isAuthorized } = require('../utils/jwt');
 const User = require('../models/user');
 
@@ -6,28 +6,27 @@ const SALT_ROUNDS = 10;
 
 module.exports.login = async (req, res, next) => {
   try {
+    console.log('Login');
     const { email, password } = req.body;
 
     if (!email || !password) {
       next(res.status(400).send({ message: 'Invalid Email or Password' }));
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findUserByCredentials(email, password);
+    console.log(user);
 
     if (!user) {
       next(res.status(401).send({ message: 'Invalid Email or Password' }));
     } else {
-      bcrypt.compare(password, user.password)
-        .then((matched) => {
-          const token = getToken(user._id);
-          if (matched) {
-            res.status(200).send({ token });
-          } else {
-            res.status(401).send({ message: 'Invalid Email or Password' });
-          }
-        });
+      const { _id } = user._id;
+      console.log(_id);
+      const token = await getToken(user._id);
+
+      res.status(200).json(token);
     }
   } catch (err) {
+    console.log('500 error');
     next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
   }
 };
@@ -42,29 +41,30 @@ module.exports.createUser = async (req, res, next) => {
       next(res.status(400).send({ message: 'Invalid Email or Password' }));
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email });
 
     if (user) {
       next(res.status(409).send({ message: 'User already exist' }));
     }
 
-    const hashedPassword = bcrypt.hash(password, SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-    const newUser = await User.create({
-      email, password: hashedPassword, name, about, avatar,
-    });
+    if (hashedPassword) {
+      const newUser = await User.create({
+        email, password: hashedPassword, name, about, avatar,
+      });
 
-    if (!newUser) {
-      next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
+      if (!newUser) {
+        next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
+      }
+
+      res.status(200).send(newUser);
     }
-
-    res.send(newUser);
   } catch (err) {
     if (err.name === 'ValidationError') {
       next(res.status(400).send(err));
-    } else {
-      next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
     }
+    next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
   }
 };
 

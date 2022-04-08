@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const emailValidator = require('validator');
+const bcrypt = require('bcryptjs');
+const { Unauthorized } = require('../utils/errorHandler');
 
 const regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'*+,;=.]+$/;
 
@@ -46,5 +48,29 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
+
+userSchema.statics.findUserByCredentials = async function findUserByCredentials(email, password) {
+  try {
+    const user = await this.findOne({ email }).select('+password');
+
+    if (!user) {
+      console.error('Incorrect email or password');
+      return Promise.reject(new Unauthorized('Incorrect email or password'));
+    }
+
+    const pasVerification = await bcrypt.compare(password, user.password);
+
+    if (!pasVerification) {
+      console.error('Incorrect email or password 2');
+      return Promise.reject(new Unauthorized('Incorrect email or password'));
+    }
+
+    return user;
+  }
+  catch (e) {
+    console.error('Incorrect email or password 3');
+    return Promise.reject(new Unauthorized('Incorrect email or password'));
+  }
+};
 
 module.exports = mongoose.model('user', userSchema);
