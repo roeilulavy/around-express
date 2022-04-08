@@ -4,24 +4,18 @@ const User = require('../models/user');
 
 const SALT_ROUNDS = 10;
 
-const VALIDATION_ERROE = 400;
-const UNAUTHORIZED_ERROE = 401;
-const NOTFOUND_ERROE = 404;
-const CONFLICT = 409;
-const SERVER_ERROE = 500;
-
 module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      next(res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' }));
+      next(res.status(400).send({ message: 'Invalid Email or Password' }));
     }
 
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      next(res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' }));
+      next(res.status(401).send({ message: 'Invalid Email or Password' }));
     } else {
       bcrypt.compare(password, user.password)
         .then((matched) => {
@@ -29,29 +23,29 @@ module.exports.login = async (req, res, next) => {
           if (matched) {
             res.status(200).send({ token });
           } else {
-            res.status(UNAUTHORIZED_ERROE).send({ message: 'Invalid Email or Password' });
+            res.status(401).send({ message: 'Invalid Email or Password' });
           }
         });
     }
   } catch (err) {
-    next(res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` }));
+    next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
   }
 };
 
-module.exports.createUser = async (req, res) => {
+module.exports.createUser = async (req, res, next) => {
   try {
     const {
       email, password, name, about, avatar,
     } = req.body;
 
     if (!email || !password) {
-      res.status(VALIDATION_ERROE).send({ message: 'Invalid Email or Password' });
+      next(res.status(400).send({ message: 'Invalid Email or Password' }));
     }
 
     const user = await User.findOne({ email }).select('+password');
 
     if (user) {
-      res.status(CONFLICT).send({ message: 'User already exist' });
+      next(res.status(409).send({ message: 'User already exist' }));
     }
 
     const hashedPassword = bcrypt.hash(password, SALT_ROUNDS);
@@ -61,15 +55,15 @@ module.exports.createUser = async (req, res) => {
     });
 
     if (!newUser) {
-      res.status(VALIDATION_ERROE).send({ message: 'Invalid data passed to the methods for creating a user' });
+      next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
     }
 
     res.send(newUser);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(VALIDATION_ERROE).send(err);
+      next(res.status(400).send(err));
     } else {
-      res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+      next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
     }
   }
 };
@@ -83,18 +77,18 @@ module.exports.getUserInfo = async (req, res, next) => {
     if (user) {
       res.status(200).send(user);
     } else if (user === null) {
-      next(res.status(NOTFOUND_ERROE).send({ message: 'User ID not found' }));
+      next(res.status(404).send({ message: 'User ID not found' }));
     }
   } catch (e) {
     if (e.name === 'CastError') {
-      next(res.status(NOTFOUND_ERROE).send({ message: 'User ID not found' }));
+      next(res.status(404).send({ message: 'User ID not found' }));
       return;
     }
     next(e);
   }
 };
 
-module.exports.getUsers = async (req, res) => {
+module.exports.getUsers = async (req, res, next) => {
   try {
     const authorized = isAuthorized(req.headers.authorization);
 
@@ -102,28 +96,28 @@ module.exports.getUsers = async (req, res) => {
       const users = await User.find({});
       res.send(users);
     } else {
-      res.status(NOTFOUND_ERROE).send({ message: 'User ID not found' });
+      next(res.status(404).send({ message: 'User ID not found' }));
     }
   } catch (err) {
-    res.status(SERVER_ERROE).send({ message: 'An error has occurred on the server' });
+    next(res.status(500).send({ message: 'An error has occurred on the server' }));
   }
 };
 
-module.exports.getUserById = async (req, res) => {
+module.exports.getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.user_id);
 
     if (!user) {
-      res.status(NOTFOUND_ERROE).send({ message: 'User ID not found' });
+      next(res.status(404).send({ message: 'User ID not found' }));
     }
 
     res.send(user);
   } catch (err) {
-    res.status(SERVER_ERROE).send({ message: 'An error has occurred on the server' });
+    next(res.status(500).send({ message: 'An error has occurred on the server' }));
   }
 };
 
-module.exports.updateProfile = async (req, res) => {
+module.exports.updateProfile = async (req, res, next) => {
   try {
     const { name, about } = req.body;
     const updateProfile = await User.findByIdAndUpdate(
@@ -136,20 +130,20 @@ module.exports.updateProfile = async (req, res) => {
     );
 
     if (!updateProfile) {
-      res.status(VALIDATION_ERROE).send({ message: 'Invalid data passed to the methods for creating a user' });
+      next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
     }
 
     res.send(updateProfile);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(VALIDATION_ERROE).send(err);
+      next(res.status(400).send(err));
     } else {
-      res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+      next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
     }
   }
 };
 
-module.exports.updateAvatar = async (req, res) => {
+module.exports.updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
     const updateAvatar = await User.findByIdAndUpdate(
@@ -162,15 +156,15 @@ module.exports.updateAvatar = async (req, res) => {
     );
 
     if (!updateAvatar) {
-      res.status(VALIDATION_ERROE).send({ message: 'Invalid data passed to the methods for creating a user' });
+      next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
     }
 
     res.send(updateAvatar);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(VALIDATION_ERROE).send(err);
+      next(res.status(400).send(err));
     } else {
-      res.status(SERVER_ERROE).send({ message: `An error has occurred on the server: ${err}` });
+      next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
     }
   }
 };
