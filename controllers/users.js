@@ -7,27 +7,21 @@ const SALT_ROUNDS = 10;
 module.exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
 
     if (!email || !password) {
-      console.error('No Email or Password');
       next(res.status(400).send({ message: 'Invalid Email or Password' }));
     }
 
     const user = await User.findUserByCredentials(email, password);
-    console.log(user);
 
     if (!user) {
       next(res.status(401).send({ message: 'Invalid Email or Password' }));
     } else {
-      const { _id } = user._id;
-      console.log(_id);
       const token = await getToken(user._id);
 
       res.status(200).json(token);
     }
   } catch (err) {
-    console.log('500 error');
     next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
   }
 };
