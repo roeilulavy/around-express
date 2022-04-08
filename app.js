@@ -41,13 +41,6 @@ app.disable('x-powered-by');
 
 app.use(requestLogger);
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '621b5c29207c59a9c3067902',
-//   };
-//   next();
-// });
-
 // routes
 app.post('/signin', celebrate({
   body: Joi.object().keys({
