@@ -4,7 +4,7 @@ module.exports.getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
 
-    res.send(cards);
+    res.status(200).send(cards);
   } catch (err) {
     next(res.status(500).send({ message: 'An error has occurred on the server' }));
   }

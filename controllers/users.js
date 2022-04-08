@@ -87,7 +87,7 @@ module.exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
 
-    res.send(users);
+    res.status(200).send(users);
   } catch (err) {
     next(res.status(500).send({ message: 'An error has occurred on the server' }));
   }
