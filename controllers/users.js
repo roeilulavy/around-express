@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { getToken } = require('../utils/jwt');
 const User = require('../models/user');
+const { NotFoundError, BadRequestError, Unauthorized, ConflictError } = require('../utils/errorHandler');
 
 const SALT_ROUNDS = 10;
 
@@ -9,20 +10,20 @@ module.exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      next(res.status(400).send({ message: 'Invalid Email or Password' }));
+      next(new BadRequestError('Invalid info was provided'));
     }
 
     const user = await User.findUserByCredentials(email, password);
 
     if (!user) {
-      next(res.status(401).send({ message: 'Invalid Email or Password' }));
+      next(new Unauthorized('Invalid Email or Password'));
     } else {
       const token = await getToken(user._id);
 
       res.status(200).json(token);
     }
   } catch (err) {
-    next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
+    next(err);
   }
 };
 
@@ -33,13 +34,13 @@ module.exports.createUser = async (req, res, next) => {
     } = req.body;
 
     if (!email || !password) {
-      next(res.status(400).send({ message: 'Invalid Email or Password' }));
+      next(new BadRequestError('Invalid info was provided'));
     }
 
     const user = await User.findOne({ email });
 
     if (user) {
-      next(res.status(409).send({ message: 'User already exist' }));
+      next(new ConflictError('User already exist'));
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -50,16 +51,17 @@ module.exports.createUser = async (req, res, next) => {
       });
 
       if (!newUser) {
-        next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
+        next(new BadRequestError('Invalid info was provided'));
       }
 
       res.status(200).send(newUser);
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(res.status(400).send(err));
+      next(new BadRequestError('Invalid info was provided'));
+      return;
     }
-    next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
+    next(err);
   }
 };
 
@@ -72,14 +74,14 @@ module.exports.getUserInfo = async (req, res, next) => {
     if (user) {
       res.status(200).send(user);
     } else if (user === null) {
-      next(res.status(404).send({ message: 'User ID not found' }));
+      next(new NotFoundError('User not found!'));
     }
-  } catch (e) {
-    if (e.name === 'CastError') {
-      next(res.status(404).send({ message: 'User ID not found' }));
+  } catch (err) {
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Invalid info was provided'));
       return;
     }
-    next(e);
+    next(err);
   }
 };
 
@@ -87,9 +89,13 @@ module.exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
 
-    res.status(200).send(users);
+    if (users) {
+      res.status(200).send(users);
+    } else {
+      throw new Error();
+    }
   } catch (err) {
-    next(res.status(500).send({ message: 'An error has occurred on the server' }));
+    next(err);
   }
 };
 
@@ -97,13 +103,17 @@ module.exports.getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.user_id);
 
-    if (!user) {
-      next(res.status(404).send({ message: 'User ID not found' }));
+    if (user) {
+      res.status(200).send(user);
+    } else if (user === null) {
+      next(new NotFoundError('User not found!'));
     }
-
-    res.send(user);
   } catch (err) {
-    next(res.status(500).send({ message: 'An error has occurred on the server' }));
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Bad request'));
+      return;
+    }
+    next(err);
   }
 };
 
@@ -119,17 +129,17 @@ module.exports.updateProfile = async (req, res, next) => {
       },
     );
 
-    if (!updateProfile) {
-      next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
+    if (updateProfile) {
+      res.status(200).send(updateProfile);
+    } else if (updateProfile === null) {
+      next(new NotFoundError('User not found!'));
     }
-
-    res.send(updateProfile);
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      next(res.status(400).send(err));
-    } else {
-      next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      next(new BadRequestError('Bad request'));
+      return;
     }
+    next(err);
   }
 };
 
@@ -145,16 +155,16 @@ module.exports.updateAvatar = async (req, res, next) => {
       },
     );
 
-    if (!updateAvatar) {
-      next(res.status(400).send({ message: 'Invalid data passed to the methods for creating a user' }));
-    }
-
-    res.send(updateAvatar);
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      next(res.status(400).send(err));
+    if (updateAvatar) {
+      res.status(200).send(updateAvatar);
     } else {
-      next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
+      throw new Error();
     }
+  } catch (err) {
+    if (err.name === 'ValidationError' || err.name === 'CastError') {
+      next(new BadRequestError('Bad request'));
+      return;
+    }
+    next(err);
   }
 };
