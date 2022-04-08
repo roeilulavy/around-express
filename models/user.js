@@ -64,8 +64,7 @@ userSchema.statics.findUserByCredentials = async function findUserByCredentials(
     }
 
     return user;
-  }
-  catch (e) {
+  } catch (e) {
     return Promise.reject(new Unauthorized('Incorrect email or password'));
   }
 };
