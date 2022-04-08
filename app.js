@@ -68,7 +68,7 @@ app.use(errorLogger);
 
 mongoose.connection.once('error', () => {
   console.error.bind(console, 'MongoDB Connection Error: ');// eslint-disable-line no-console
-});// eslint-disable-line no-console
+});
 
 mongoose.connection.once('open', () => {
   console.log('Connected to MongoDB');// eslint-disable-line no-console
