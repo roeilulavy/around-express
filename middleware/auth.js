@@ -17,6 +17,7 @@ function auth(req, res, next) {
 
     if (!payload) {
       next(new AuthorizationError('Authorization Error'));
+      return;
     }
 
     req.user = payload;
