@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const { getToken } = require('../utils/jwt');
 const User = require('../models/user');
 const {
-  BadRequestError, Unauthorized, NotFoundError, ConflictError,
+  BadRequestError, AuthorizationError, NotFoundError, ConflictError,
 } = require('../utils/errorHandler');
 
 const SALT_ROUNDS = 10;
@@ -18,14 +18,14 @@ module.exports.login = async (req, res, next) => {
     const user = await User.findUserByCredentials(email, password);
 
     if (!user) {
-      next(new Unauthorized('Invalid Email or Password'));
+      next(new AuthorizationError('Invalid Email or Password'));
     } else {
       const token = await getToken(user._id);
 
       res.status(200).json(token);
     }
   } catch (err) {
-    next(new Unauthorized('Invalid Email or Password'));
+    next(new AuthorizationError('Invalid Email or Password'));
   }
 };
 

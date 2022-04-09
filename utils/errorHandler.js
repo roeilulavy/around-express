@@ -6,7 +6,7 @@ class BadRequestError extends Error {
   }
 }
 
-class Unauthorized extends Error {
+class AuthorizationError extends Error {
   constructor(message) {
     super(message);
     this.status = 401;
@@ -35,5 +35,5 @@ class ConflictError extends Error {
 }
 
 module.exports = {
-  BadRequestError, Unauthorized, ForbiddentError, NotFoundError, ConflictError,
+  BadRequestError, AuthorizationError, ForbiddentError, NotFoundError, ConflictError,
 };
