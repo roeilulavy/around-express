@@ -5,7 +5,7 @@ module.exports.handleErrors = (err, req, res, next) => {
     return;
   }
 
-  res.status(500).send({ message: `some thing went wrong with the server  ${err}` });
+  res.status(500).send({ message: `some thing went wrong with the server  ${err.message}` });
 
   next();
 };
