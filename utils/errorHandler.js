@@ -1,18 +1,4 @@
 /* eslint-disable max-classes-per-file */
-class Unauthorized extends Error {
-  constructor(message) {
-    super(message);
-    this.status = 401;
-  }
-}
-
-class NotFoundError extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 404;
-  }
-}
-
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
@@ -20,10 +6,24 @@ class BadRequestError extends Error {
   }
 }
 
+class Unauthorized extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 401;
+  }
+}
+
 class ForbiddentError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 403;
+  }
+}
+
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
   }
 }
 
@@ -35,5 +35,5 @@ class ConflictError extends Error {
 }
 
 module.exports = {
-  NotFoundError, ForbiddentError, BadRequestError, Unauthorized, ConflictError,
+  BadRequestError, Unauthorized, ForbiddentError, NotFoundError, ConflictError,
 };

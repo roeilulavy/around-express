@@ -1,12 +1,19 @@
 const Card = require('../models/card');
+const {
+  BadRequestError, NotFoundError,
+} = require('../utils/errorHandler');
 
 module.exports.getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
 
-    res.status(200).send(cards);
+    if (cards) {
+      res.status(200).send(cards);
+    } else {
+      throw new Error();
+    }
   } catch (err) {
-    next(res.status(500).send({ message: 'An error has occurred on the server' }));
+    next(err);
   }
 };
 
@@ -16,16 +23,15 @@ module.exports.createCard = async (req, res, next) => {
 
     const newCard = await Card.create({ name, link, owner: req.user._id });
 
-    if (!newCard) {
-      next(res.status(400).send({ message: 'invalid data passed to the methods for creating a card' }));
+    if (newCard) {
+      res.status(200).send(newCard);
     }
-
-    res.send(newCard);
+    next(new BadRequestError('Invalid info was provided'));
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(res.status(400).send(err));
+      next(new BadRequestError('Invalid info was provided'));
     } else {
-      next(res.status(500).send({ message: `An error has occurred on the server: ${err}` }));
+      next(err);
     }
   }
 };
@@ -34,14 +40,12 @@ module.exports.deleteCard = async (req, res, next) => {
   try {
     const deleteCard = await Card.findByIdAndRemove(req.params.cardId);
 
-    if (!deleteCard) {
-      next(res.status(404).send({ message: 'Card not found' }));
+    if (deleteCard) {
+      res.status(200).send(deleteCard);
     }
-
-    res.send(deleteCard);
+    next(new NotFoundError('Card not found!'));
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    next(res.status(500).send({ message: 'An error has occurred on the server' }));
+    next(new BadRequestError('Invalid info was provided'));
   }
 };
 
@@ -53,14 +57,16 @@ module.exports.likeCard = async (req, res, next) => {
       { new: true },
     );
 
-    if (!like) {
-      next(res.status(404).send({ message: 'Card not found' }));
+    if (like) {
+      res.status(200).send(like);
     }
-
-    res.send(like);
+    next(new NotFoundError('Card not found!'));
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    next(res.status(500).send({ message: 'An error has occurred on the server' }));
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Invalid info was provided'));
+      return;
+    }
+    next(err);
   }
 };
 
@@ -72,13 +78,15 @@ module.exports.dislikeCard = async (req, res, next) => {
       { new: true },
     );
 
-    if (!dislike) {
-      next(res.status(404).send({ message: 'Card not found' }));
+    if (dislike) {
+      res.status(200).send(dislike);
     }
-
-    res.send(dislike);
+    next(new NotFoundError('Card not found!'));
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    next(res.status(500).send({ message: 'An error has occurred on the server' }));
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Invalid info was provided'));
+      return;
+    }
+    next(err);
   }
 };
