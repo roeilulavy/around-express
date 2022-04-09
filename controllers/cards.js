@@ -1,50 +1,55 @@
 const Card = require('../models/card');
+const {
+  BadRequestError, NotFoundError,
+} = require('../utils/errorHandler');
 
-module.exports.getCards = async (req, res) => {
+module.exports.getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
 
-    res.send(cards);
+    if (cards) {
+      res.status(200).send(cards);
+    } else {
+      throw new Error();
+    }
   } catch (err) {
-    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
+    next(err);
   }
 };
 
-module.exports.createCard = async (req, res) => {
+module.exports.createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
 
     const newCard = await Card.create({ name, link, owner: req.user._id });
 
-    if (!newCard) {
-      res.status(400).send({ message: 'invalid data passed to the methods for creating a card' });
+    if (newCard) {
+      res.status(200).send(newCard);
     }
-
-    res.send(newCard);
+    next(new BadRequestError('Invalid info was provided'));
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).send(err);
+      next(new BadRequestError('Invalid info was provided'));
     } else {
-      res.status(500).send({ message: `An error has occurred on the server: ${err}` });
+      next(err);
     }
   }
 };
 
-module.exports.deleteCard = async (req, res) => {
+module.exports.deleteCard = async (req, res, next) => {
   try {
     const deleteCard = await Card.findByIdAndRemove(req.params.cardId);
 
-    if (!deleteCard) {
-      res.status(404).send({ message: 'Card not found' });
+    if (deleteCard) {
+      res.status(200).send(deleteCard);
     }
-
-    res.send(deleteCard);
+    next(new NotFoundError('Card not found!'));
   } catch (err) {
-    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
+    next(new BadRequestError('Invalid info was provided'));
   }
 };
 
-module.exports.likeCard = async (req, res) => {
+module.exports.likeCard = async (req, res, next) => {
   try {
     const like = await Card.findByIdAndUpdate(
       req.params.cardId,
@@ -52,17 +57,20 @@ module.exports.likeCard = async (req, res) => {
       { new: true },
     );
 
-    if (!like) {
-      res.status(404).send({ message: 'Card not found' });
+    if (like) {
+      res.status(200).send(like);
     }
-
-    res.send(like);
+    next(new NotFoundError('Card not found!'));
   } catch (err) {
-    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Invalid info was provided'));
+      return;
+    }
+    next(err);
   }
 };
 
-module.exports.dislikeCard = async (req, res) => {
+module.exports.dislikeCard = async (req, res, next) => {
   try {
     const dislike = await Card.findByIdAndUpdate(
       req.params.cardId,
@@ -70,12 +78,15 @@ module.exports.dislikeCard = async (req, res) => {
       { new: true },
     );
 
-    if (!dislike) {
-      res.status(404).send({ message: 'Card not found' });
+    if (dislike) {
+      res.status(200).send(dislike);
     }
-
-    res.send(dislike);
+    next(new NotFoundError('Card not found!'));
   } catch (err) {
-    res.status(500).send({ message: `An error has occurred on the server: ${err}` });
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Invalid info was provided'));
+      return;
+    }
+    next(err);
   }
 };
