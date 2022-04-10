@@ -41,17 +41,17 @@ module.exports.createCard = async (req, res, next) => {
 };
 
 module.exports.deleteCard = async (req, res, next) => {
-  const { cardId } = req.params;
+  const { id } = req.params;
   const { _id } = req.user;
   try {
-    const card = await Card.findById(cardId);
+    const card = await Card.findById(id);
     console.log(_id);
     console.log(card);
     if (card.owner._id === _id) {
       console.log(card.owner);
-      const deleteCard = await Card.findByIdAndRemove(cardId);
+      const deleteCard = await Card.findByIdAndDelete(id);
       if (deleteCard) {
-        res.status(200).send(deleteCard);
+        res.status(200).json(deleteCard);
       } else {
         throw new Error();
       }
