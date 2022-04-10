@@ -19,23 +19,24 @@ module.exports.getCards = async (req, res, next) => {
 };
 
 module.exports.createCard = async (req, res, next) => {
-  const { id } = req.user;
-  try {
-    const { name, link } = req.body;
+  const { _id } = req.user;
+  const { name, link } = req.body;
 
-    const user = await User.findById({ id });
+  try {
+    const user = await User.findById({ _id });
     const newCard = await Card.create({ name, link, owner: user });
 
     if (newCard) {
       res.status(200).send(newCard);
+    } else {
+      throw new Error();
     }
-    next(new BadRequestError('Invalid info was provided'));
   } catch (err) {
     if (err.name === 'ValidationError') {
       next(new BadRequestError('Invalid info was provided'));
-    } else {
-      next(err);
+      return;
     }
+    next(err);
   }
 };
 
