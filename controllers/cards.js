@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const User = require('../models/user');
 const {
-  BadRequestError, NotFoundError,
+  BadRequestError, NotFoundError, ForbiddentError,
 } = require('../utils/errorHandler');
 
 module.exports.getCards = async (req, res, next) => {
@@ -41,15 +41,29 @@ module.exports.createCard = async (req, res, next) => {
 };
 
 module.exports.deleteCard = async (req, res, next) => {
+  const { cardId } = req.params;
+  const { _id } = req.user;
   try {
-    const deleteCard = await Card.findByIdAndRemove(req.params.cardId);
+    const card = await Card.findById(cardId);
 
-    if (deleteCard) {
-      res.status(200).send(deleteCard);
+    if (card.owner._id === _id) {
+      const deleteCard = await Card.findByIdAndRemove(cardId);
+      if (deleteCard) {
+        res.status(200).send(deleteCard);
+      } else {
+        throw new Error();
+      }
+    } else if (card === null) {
+      next(new NotFoundError('Card not found!'));
+    } else {
+      next(new ForbiddentError('This card is not yours'));
     }
-    next(new NotFoundError('Card not found!'));
   } catch (err) {
-    next(new BadRequestError('Invalid info was provided'));
+    if (err.name === 'CastError') {
+      next(new BadRequestError('Invalid info was provided'));
+      return;
+    }
+    next(err);
   }
 };
 
