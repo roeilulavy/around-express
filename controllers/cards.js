@@ -54,17 +54,21 @@ module.exports.deleteCard = async (req, res, next) => {
 };
 
 module.exports.likeCard = async (req, res, next) => {
+  const { _id } = req.user;
   try {
     const like = await Card.findByIdAndUpdate(
-      req.params.cardId,
-      { $addToSet: { likes: req.user } },
+      req.params.id,
+      { $addToSet: { likes: _id } },
       { new: true },
     );
 
     if (like) {
       res.status(200).send(like);
+    } else if (like === null) {
+      next(new NotFoundError('Card not found!'));
+    } else {
+      throw new Error();
     }
-    next(new NotFoundError('Card not found!'));
   } catch (err) {
     if (err.name === 'CastError') {
       next(new BadRequestError('Invalid info was provided'));
