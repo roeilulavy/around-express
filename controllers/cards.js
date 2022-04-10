@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const User = require('../models/user');
 const {
   BadRequestError, NotFoundError,
 } = require('../utils/errorHandler');
@@ -18,10 +19,12 @@ module.exports.getCards = async (req, res, next) => {
 };
 
 module.exports.createCard = async (req, res, next) => {
+  const { id } = req.user;
   try {
     const { name, link } = req.body;
 
-    const newCard = await Card.create({ name, link, owner: req.user._id });
+    const user = await User.findById({ id });
+    const newCard = await Card.create({ name, link, owner: user });
 
     if (newCard) {
       res.status(200).send(newCard);
@@ -53,7 +56,7 @@ module.exports.likeCard = async (req, res, next) => {
   try {
     const like = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $addToSet: { likes: req.user._id } },
+      { $addToSet: { likes: req.user } },
       { new: true },
     );
 
@@ -74,7 +77,7 @@ module.exports.dislikeCard = async (req, res, next) => {
   try {
     const dislike = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $pull: { likes: req.user._id } },
+      { $pull: { likes: req.user } },
       { new: true },
     );
 
