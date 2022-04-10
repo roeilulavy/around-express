@@ -74,7 +74,7 @@ module.exports.likeCard = async (req, res, next) => {
       req.params.id,
       { $addToSet: { likes: _id } },
       { new: true },
-    ).populate(['likes', 'owner']);
+    );
 
     if (like) {
       res.status(200).send(like);
@@ -100,7 +100,7 @@ module.exports.dislikeCard = async (req, res, next) => {
       req.params.id,
       { $pull: { likes: _id } },
       { new: true },
-    ).populate(['likes', 'owner']);
+    );
 
     if (dislike) {
       res.status(200).send(dislike);
