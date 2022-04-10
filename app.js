@@ -10,7 +10,7 @@ const { handleCors } = require('./middleware/cors');
 const { handleErrors } = require('./middleware/handleErrors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
-const { auth } = require('./middleware/auth');
+// const { auth } = require('./middleware/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 
@@ -53,8 +53,8 @@ app.post('/signup', celebrate({
   }).unknown(true),
 }), createUser);
 
-app.use('/users', auth, usersRouter);
-app.use('/cards', auth, cardsRouter);
+app.use('/users', usersRouter);
+app.use('/cards', cardsRouter);
 
 app.get('/*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
