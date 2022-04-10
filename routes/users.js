@@ -1,7 +1,6 @@
 const usersRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { validateUrl } = require('../helpers/validator');
-const { auth } = require('../middleware/auth');
 
 const {
   getUserInfo,
@@ -10,8 +9,6 @@ const {
   updateProfile,
   updateAvatar,
 } = require('../controllers/users');
-
-usersRouter.use(auth);
 
 usersRouter.get('/', getUsers);
 
