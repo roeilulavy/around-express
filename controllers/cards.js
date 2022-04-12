@@ -1,12 +1,12 @@
 const Card = require('../models/card');
-const User = require('../models/user');
+const { User } = require('../models/user');
 const {
   BadRequestError, NotFoundError, ForbiddentError,
 } = require('../utils/errorHandler');
 
 module.exports.getCards = async (req, res, next) => {
   try {
-    const cards = await Card.find({});
+    const cards = await Card.find({}).populate(['owner', 'likes']);
 
     if (cards) {
       res.status(200).send(cards);
@@ -45,20 +45,19 @@ module.exports.deleteCard = async (req, res, next) => {
   const { _id } = req.user;
   try {
     const card = await Card.findById(id);
-    console.log(card);
-    // if (card.owner === _id) {
-      console.log(card.owner);
+    const cardOwner = card.owner.toHexString();
+    if (_id === cardOwner) {
       const deleteCard = await Card.findByIdAndRemove(id);
       if (deleteCard) {
         res.status(200).json(deleteCard);
       } else {
         throw new Error();
       }
-    // } else if (card === null) {
-    //   next(new NotFoundError('Card not found!'));
-    // } else {
-    //   next(new ForbiddentError('This card is not yours'));
-    // }
+    } else if (card === null) {
+      next(new NotFoundError('Card not found!'));
+    } else {
+      next(new ForbiddentError('This card is not yours'));
+    }
   } catch (err) {
     if (err.name === 'CastError') {
       next(new BadRequestError('Invalid info was provided'));
