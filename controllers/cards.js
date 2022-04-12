@@ -23,12 +23,17 @@ module.exports.createCard = async (req, res, next) => {
   const { name, link } = req.body;
 
   try {
-    // const user = await User.findById({ _id });
-    const user = await User.findOne({ _id });
-    const newCard = await Card.create({ name, link, owner: user });
+    const user = await User.findById({ _id });
+    if (user) {
+      console.log(user);
 
-    if (newCard) {
-      res.status(200).send(newCard);
+      const newCard = await Card.create({ name, link, owner: user });
+
+      if (newCard) {
+        res.status(200).send(newCard);
+      } else {
+        throw new Error();
+      }
     } else {
       throw new Error();
     }
