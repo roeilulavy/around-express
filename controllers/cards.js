@@ -46,7 +46,7 @@ module.exports.deleteCard = async (req, res, next) => {
   try {
     const card = await Card.findById(id);
     console.log(card);
-    if (card.owner === _id) {
+    // if (card.owner === _id) {
       console.log(card.owner);
       const deleteCard = await Card.findByIdAndRemove(id);
       if (deleteCard) {
@@ -54,11 +54,11 @@ module.exports.deleteCard = async (req, res, next) => {
       } else {
         throw new Error();
       }
-    } else if (card === null) {
-      next(new NotFoundError('Card not found!'));
-    } else {
-      next(new ForbiddentError('This card is not yours'));
-    }
+    // } else if (card === null) {
+    //   next(new NotFoundError('Card not found!'));
+    // } else {
+    //   next(new ForbiddentError('This card is not yours'));
+    // }
   } catch (err) {
     if (err.name === 'CastError') {
       next(new BadRequestError('Invalid info was provided'));
