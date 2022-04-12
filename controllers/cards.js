@@ -23,7 +23,7 @@ module.exports.createCard = async (req, res, next) => {
   const { name, link } = req.body;
 
   try {
-    const user = await User.findById({ _id });
+    const user = await User.findOne({ _id });
     if (user) {
       console.log(user);
 
