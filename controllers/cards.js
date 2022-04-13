@@ -53,6 +53,7 @@ module.exports.deleteCard = async (req, res, next) => {
       } else {
         throw new Error();
       }
+      res.send({ card, cardOwner });
     } else if (card === null) {
       next(new NotFoundError('Card not found!'));
     } else {
