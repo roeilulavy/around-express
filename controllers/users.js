@@ -12,7 +12,7 @@ module.exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      next(new BadRequestError('Invalid info was provided'));
+      next(new AuthorizationError('Invalid info was provided'));
     }
 
     const user = await User.findUserByCredentials(email, password);
@@ -22,7 +22,7 @@ module.exports.login = async (req, res, next) => {
     } else {
       const token = await getToken(user._id);
 
-      res.status(200).json(token);
+      res.status(200).json({ token });
     }
   } catch (err) {
     next(new AuthorizationError('Invalid Email or Password'));
@@ -56,7 +56,13 @@ module.exports.createUser = async (req, res, next) => {
         next(new BadRequestError('Invalid info was provided'));
       }
 
-      res.status(200).send(newUser);
+      res.status(200).send({
+        _id: newUser._id,
+        email: newUser.email,
+        name: newUser.name,
+        about: newUser.about,
+        avatar: newUser.avatar,
+      });
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
