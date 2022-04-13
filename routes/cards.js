@@ -19,23 +19,23 @@ cardsRouter.post('/', celebrate({
   }),
 }), createCard);
 
-cardsRouter.delete('/:cardId', celebrate({
+cardsRouter.delete('/:id', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().required().alphanum().length(24)
       .hex(),
   }),
 }), deleteCard);
 
-cardsRouter.put('/:cardId/likes', celebrate({
+cardsRouter.put('/:id/likes', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().required().alphanum().length(24)
       .hex(),
   }),
 }), likeCard);
 
-cardsRouter.delete('/:cardId/likes', celebrate({
+cardsRouter.delete('/:id/likes', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().alphanum().length(24)
+    id: Joi.string().required().alphanum().length(24)
       .hex(),
   }),
 }), dislikeCard);
