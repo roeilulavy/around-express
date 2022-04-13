@@ -24,17 +24,12 @@ module.exports.createCard = async (req, res, next) => {
 
   try {
     const user = await User.findById({ _id });
-    // if (user) {
-      const newCard = await Card.create({ name, link, owner: user });
-
-      if (newCard) {
-        res.status(200).send(newCard);
-      } else {
-        throw new Error();
-      }
-    // } else {
-    //   throw new Error();
-    // }
+    const newCard = await Card.create({ name, link, owner: user });
+    if (newCard) {
+      res.status(200).send(newCard);
+    } else {
+      throw new Error();
+    }
   } catch (err) {
     if (err.name === 'ValidationError') {
       next(new BadRequestError('Invalid info was provided'));
