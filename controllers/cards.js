@@ -46,6 +46,7 @@ module.exports.deleteCard = async (req, res, next) => {
   try {
     const card = await Card.findOne(id);
     const cardOwner = card.owner.toHexString();
+    console.log({ card, cardOwner })
     if (_id === cardOwner) {
       const deleteCard = await Card.findByIdAndRemove(id);
       if (deleteCard) {
@@ -53,7 +54,7 @@ module.exports.deleteCard = async (req, res, next) => {
       } else {
         throw new Error();
       }
-      res.send({ card, cardOwner });
+      res.send({ card, cardOwner })
     } else if (card === null) {
       next(new NotFoundError('Card not found!'));
     } else {
