@@ -20,9 +20,9 @@ module.exports.login = async (req, res, next) => {
     if (!user) {
       next(new AuthorizationError('Invalid Email or Password'));
     } else {
-      const { token } = await getToken(user._id);
+      const token = await getToken(user._id);
 
-      res.status(200).json(token);
+      res.status(200).json({ token });
     }
   } catch (err) {
     next(new AuthorizationError('Invalid Email or Password'));
