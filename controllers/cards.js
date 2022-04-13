@@ -45,6 +45,7 @@ module.exports.deleteCard = async (req, res, next) => {
   const { _id } = req.user;
   try {
     const card = await Card.findById(id);
+    console.log(card);
     const cardOwner = card.owner.toHexString();
     if (_id === cardOwner) {
       const deleteCard = await Card.findByIdAndRemove(id);
