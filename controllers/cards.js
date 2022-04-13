@@ -70,7 +70,7 @@ module.exports.likeCard = async (req, res, next) => {
   const { _id } = req.user;
   try {
     const like = await Card.findByIdAndUpdate(
-      req.params.id,
+      req.params.cardId,
       { $addToSet: { likes: _id } },
       { new: true },
     ).populate(['likes', 'owner']);
@@ -96,7 +96,7 @@ module.exports.dislikeCard = async (req, res, next) => {
 
   try {
     const dislike = await Card.findByIdAndUpdate(
-      req.params.id,
+      req.params.cardId,
       { $pull: { likes: _id } },
       { new: true },
     ).populate(['likes', 'owner']);
