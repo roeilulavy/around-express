@@ -40,13 +40,13 @@ module.exports.createCard = async (req, res, next) => {
 };
 
 module.exports.deleteCard = async (req, res, next) => {
-  const { id } = req.params;
+  const { cardId } = req.params;
   const { _id } = req.user;
   try {
-    const card = await Card.findById(id);
+    const card = await Card.findById(cardId);
     const cardOwner = card.owner.toHexString();
     if (_id === cardOwner) {
-      const deleteCard = await Card.findByIdAndRemove(id);
+      const deleteCard = await Card.findByIdAndRemove(cardId);
       if (deleteCard) {
         res.status(200).json(deleteCard);
       } else {
