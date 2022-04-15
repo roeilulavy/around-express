@@ -1,5 +1,5 @@
 const cardsRouter = require('express').Router();
-const { celebrate, Joi, errors } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const { validateUrl } = require('../helpers/validator');
 
 const {
@@ -39,7 +39,5 @@ cardsRouter.delete('/:cardId/likes', celebrate({
       .hex(),
   }),
 }), dislikeCard);
-
-cardsRouter.use(errors());
 
 module.exports = cardsRouter;

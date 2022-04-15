@@ -1,5 +1,5 @@
 const usersRouter = require('express').Router();
-const { celebrate, Joi, errors } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const { validateUrl } = require('../helpers/validator');
 
 const {
@@ -32,7 +32,5 @@ usersRouter.patch('/me/avatar', celebrate({
     avatar: Joi.string().required().custom(validateUrl),
   }),
 }), updateAvatar);
-
-usersRouter.use(errors());
 
 module.exports = usersRouter;
