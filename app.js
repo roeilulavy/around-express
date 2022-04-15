@@ -8,7 +8,7 @@ const { errors } = require('celebrate');
 // const { handleCors } = require('./middleware/cors');
 const { handleErrors } = require('./middleware/handleErrors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const router = require('./routes/routers');
+const routers = require('./routes/routers');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -34,12 +34,12 @@ app.options('*', cors());
 app.use(requestLogger);
 
 // routes
-app.use('/', router);
+app.use('/', routers);
 
 app.use(errorLogger);
 app.use(handleErrors);
 
-router.use(errors());
+routers.use(errors());
 
 mongoose.connection.once('error', () => {
   console.error.bind(console, 'MongoDB Connection Error: ');// eslint-disable-line no-console
