@@ -60,8 +60,8 @@ app.get('/*', (req, res, next) => {
 });
 
 app.use(errorLogger);
-app.use(errors());
 app.use(handleErrors);
+app.use(errors());
 
 mongoose.connection.once('error', () => {
   console.error.bind(console, 'MongoDB Connection Error: ');// eslint-disable-line no-console

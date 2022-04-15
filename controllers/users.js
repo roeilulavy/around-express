@@ -12,7 +12,7 @@ module.exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      next(new AuthorizationError('Invalid Email or Password'));
+      next(new AuthorizationError('Invalid Data Email or Password'));
     }
 
     const user = await User.findUserByCredentials(email, password);
