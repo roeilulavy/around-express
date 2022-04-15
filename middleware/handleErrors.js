@@ -1,5 +1,5 @@
 const handleErrors = (err, req, res, next) => {
-  if (err.statusCode && err.message) {
+  if (err.statusCode !== 500 && err.message) {
     res.status(err.statusCode).send({ message: err.message });
     next();
     return;
