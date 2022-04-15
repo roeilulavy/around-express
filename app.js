@@ -14,7 +14,6 @@ const { NotFoundError } = require('./utils/errorHandler');
 const { auth } = require('./middleware/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const routers = require('./routes/routers');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -40,33 +39,30 @@ app.options('*', cors());
 app.use(requestLogger);
 
 // routes
-// app.post('/signin', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required().min(6),
-//   }),
-// }), login);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(6),
+  }),
+}), login);
 
-// app.post('/signup', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required().min(6),
-//   }).unknown(true),
-// }), createUser);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(6),
+  }).unknown(true),
+}), createUser);
 
-// app.use('/users', auth, usersRouter);
-// app.use('/cards', auth, cardsRouter);
+app.use('/users', auth, usersRouter);
+app.use('/cards', auth, cardsRouter);
 
-// app.get('/*', (req, res, next) => {
-//   next(new NotFoundError('Requested resource not found'));
-// });
-
-app.use('/', routers);
+app.get('/*', (req, res, next) => {
+  next(new NotFoundError('Requested resource not found'));
+});
 
 app.use(errorLogger);
 app.use(handleErrors);
-// app.use(errors());
-routers.use(errors());
+app.use(errors());
 
 mongoose.connection.once('error', () => {
   console.error.bind(console, 'MongoDB Connection Error: ');// eslint-disable-line no-console
