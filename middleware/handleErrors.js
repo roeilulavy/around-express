@@ -1,9 +1,9 @@
 const handleErrors = (err, req, res, next) => {
-  if (err.statusCode && err.message) {
-    res.status(err.statusCode).send({ message: err.message });
-    next();
-    return;
-  }
+  // if (err.statusCode && err.message) {
+  //   res.status(err.statusCode).send({ message: err.message });
+  //   next();
+  //   return;
+  // }
 
   if (err.statusCode !== 500) {
     res.status(err.statusCode).send({ message: err.message });
