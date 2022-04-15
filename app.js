@@ -7,7 +7,7 @@ const rateLimiter = require('express-rate-limit');
 // const { errors } = require('celebrate');
 const { celebrate, Joi } = require('celebrate');
 const { handleCors } = require('./middleware/cors');
-const { handleErrors } = require('./middleware/handleErrors');
+// const { handleErrors } = require('./middleware/handleErrors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
 const { NotFoundError } = require('./utils/errorHandler');
@@ -61,7 +61,7 @@ app.get('/*', (req, res, next) => {
 });
 
 app.use(errorLogger);
-app.use(handleErrors);
+// app.use(handleErrors);
 // app.use(errors());
 
 mongoose.connection.once('error', () => {

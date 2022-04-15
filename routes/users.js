@@ -1,7 +1,7 @@
 const usersRouter = require('express').Router();
 const { celebrate, Joi, errors } = require('celebrate');
 const { validateUrl } = require('../helpers/validator');
-// const { handleErrors } = require('../middleware/handleErrors');
+const { handleErrors } = require('../middleware/handleErrors');
 
 const {
   getUserInfo,
@@ -34,7 +34,7 @@ usersRouter.patch('/me/avatar', celebrate({
   }),
 }), updateAvatar);
 
-// usersRouter.use(handleErrors);
+usersRouter.use(handleErrors);
 
 usersRouter.use(errors());
 
