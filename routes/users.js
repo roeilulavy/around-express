@@ -1,7 +1,6 @@
 const usersRouter = require('express').Router();
 const { celebrate, Joi, errors } = require('celebrate');
 const { validateUrl } = require('../helpers/validator');
-const { handleErrors } = require('../middleware/handleErrors');
 
 const {
   getUserInfo,
@@ -33,8 +32,6 @@ usersRouter.patch('/me/avatar', celebrate({
     avatar: Joi.string().required().custom(validateUrl),
   }),
 }), updateAvatar);
-
-usersRouter.use(handleErrors);
 
 usersRouter.use(errors());
 
