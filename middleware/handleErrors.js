@@ -1,4 +1,4 @@
-module.exports.handleErrors = (err, req, res, next) => {
+const handleErrors = (err, req, res, next) => {
   if (err.statusCode && err.message) {
     res.status(err.statusCode).send({ message: err.message });
     next();
@@ -10,3 +10,5 @@ module.exports.handleErrors = (err, req, res, next) => {
 
   next();
 };
+
+module.exports = { handleErrors };
