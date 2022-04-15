@@ -5,7 +5,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const rateLimiter = require('express-rate-limit');
 const { celebrate, Joi, errors } = require('celebrate');
-// const { handleCors } = require('./middleware/cors');
 const { handleErrors } = require('./middleware/handleErrors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
@@ -31,7 +30,6 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.disable('x-powered-by');
 
-// app.use(handleCors);
 app.use(cors());
 app.options('*', cors());
 
