@@ -1,4 +1,7 @@
 const handleErrors = (err, req, res, next) => {
+  console.log('handleError console');
+  console.log(err);
+
   if (err.statusCode && err.message) {
     res.status(err.statusCode).send({ message: err.message });
     next();
