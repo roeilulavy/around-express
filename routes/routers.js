@@ -21,7 +21,7 @@ router.post('/signup', celebrate({
   }).unknown(true),
 }), createUser);
 
-router.use(auth);
+// router.use(auth);
 
 router.use('/users', auth, usersRouter);
 router.use('/cards', auth, cardsRouter);

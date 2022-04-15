@@ -1,14 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const cors = require('cors');
 const bodyParser = require('body-parser');
-const rateLimiter = require('express-rate-limit');
 const { errors } = require('celebrate');
-const { handleCors } = require('./middleware/cors');
+const cors = require('cors');
+const rateLimiter = require('express-rate-limit');
+const routers = require('./routes/routers');
 const { handleErrors } = require('./middleware/handleErrors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const routers = require('./routes/routers');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -27,7 +26,6 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.disable('x-powered-by');
 
-app.use(handleCors);
 app.use(cors());
 app.options('*', cors());
 
