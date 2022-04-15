@@ -26,8 +26,8 @@ routers.post('/signup', celebrate({
 routers.use('/users', auth, usersRouter);
 routers.use('/cards', auth, cardsRouter);
 
-routers.get('/*', (req, res, next) => {
-  next(new NotFoundError('Requested resource not found'));
-});
+// routers.get('/*', (req, res, next) => {
+//   next(new NotFoundError('Requested resource not found'));
+// });
 
 module.exports = routers;
