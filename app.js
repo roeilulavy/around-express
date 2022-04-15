@@ -61,8 +61,8 @@ app.get('/*', (req, res, next) => {
   next(new NotFoundError('Requested resource not found'));
 });
 
-app.use(handleErrors);
 app.use(errorLogger);
+app.use(handleErrors);
 
 mongoose.connection.once('error', () => {
   console.error.bind(console, 'MongoDB Connection Error: ');// eslint-disable-line no-console
