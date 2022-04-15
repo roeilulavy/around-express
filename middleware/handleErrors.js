@@ -9,7 +9,7 @@ const handleErrors = (err, req, res, next) => {
   }
 
   // res.status(500).send({ message: `some thing went wrong with the server:  ${err.message}` });
-  res.status(err.statusCode).send({ message: err.message });
+  res.status(err.statusCode).send({ message: `some thing went wrong with the server:  ${err.message}` });
 
   next();
 };
