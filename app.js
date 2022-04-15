@@ -60,7 +60,9 @@ app.get('/*', (req, res, next) => {
 });
 
 app.use(errorLogger);
+
 app.use(handleErrors);
+
 app.use(errors());
 
 mongoose.connection.once('error', () => {
