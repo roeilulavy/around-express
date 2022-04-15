@@ -6,7 +6,7 @@ const handleErrors = (err, req, res, next) => {
   // }
 
   // res.status(500).send({ message: `some thing went wrong with the server:  ${err.message}` });
-  res.send({ err });
+  res.send(err);
   next();
 };
 
