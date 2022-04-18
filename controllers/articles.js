@@ -2,11 +2,15 @@ const Article = require('../models/article');
 const { BadRequestError, NotFoundError, ForbiddentError } = require('../utils/errorHandler');
 
 const getArticles = async (req, res, next) => {
+  const { _id } = req.user;
+
   try {
-    const articles = await Article.find({});
+    const articles = await Article.find({}).select('+owner');
 
     if (articles) {
-      res.status(200).send(articles);
+      const userArticles = articles.filter((article) => article.owner.toHexString() === _id);
+
+      res.status(200).send(userArticles);
     } else {
       throw new Error();
     }
