@@ -19,6 +19,10 @@
     "test": "jest",
     "lint": "npx eslint ."
   },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "nodemon": "^2.0.15"
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
@@ -36,6 +40,7 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.0",
+    "save": "^2.4.0",
     "validator": "^13.7.0",
     "winston": "^3.7.2"
   }
