@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-
-const regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'*+,;=.]+$/;
+const validator = require('validator');
 
 const articleSchema = new mongoose.Schema({
   keyword: {
@@ -28,15 +27,26 @@ const articleSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return v.match(regex);
+        return validator.isURL(v, { require_protocol: true, allow_underscores: true });
       },
-      message: 'The link must be valid',
+      message: 'The link must be valid!',
+    },
+  },
+  image: {
+    type: String,
+    required: true,
+    validate: {
+      validator(v) {
+        return validator.isURL(v, { require_protocol: true, allow_underscores: true });
+      },
+      message: 'The link must be valid!',
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
+    select: false,
   },
 });
 

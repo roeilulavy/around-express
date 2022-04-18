@@ -1,9 +1,7 @@
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const emailValidator = require('validator');
-const bcrypt = require('bcryptjs');
 const { AuthorizationError } = require('../utils/errorHandler');
-
-const regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'*+,;=.]+$/;
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -14,6 +12,7 @@ const userSchema = new mongoose.Schema({
       validator(v) {
         return emailValidator.isEmail(v);
       },
+      message: 'The Email must be valid!',
     },
   },
   password: {
@@ -23,10 +22,9 @@ const userSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: false,
     minlength: 2,
     maxlength: 30,
-    default: 'User',
+    required: true,
   },
 });
 
@@ -38,14 +36,14 @@ userSchema.statics.findUserByCredentials = async function findUserByCredentials(
       return Promise.reject(new AuthorizationError('Incorrect email or password'));
     }
 
-    const pasVerification = await bcrypt.compare(password, user.password);
+    const passwordVerification = await bcrypt.compare(password, user.password);
 
-    if (!pasVerification) {
+    if (!passwordVerification) {
       return Promise.reject(new AuthorizationError('Incorrect email or password'));
     }
 
     return user;
-  } catch (e) {
+  } catch (err) {
     return Promise.reject(new AuthorizationError('Incorrect email or password'));
   }
 };
