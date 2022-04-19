@@ -8,9 +8,9 @@ const getArticles = async (req, res, next) => {
     const articles = await Article.find({}).select('+owner');
 
     if (articles) {
-      const userArticles = articles.filter((article) => article.owner.toHexString() === _id);
+      const userSavedArticles = articles.filter((article) => article.owner.toHexString() === _id);
 
-      res.status(200).send(userArticles);
+      res.status(200).send(userSavedArticles);
     } else {
       throw new Error();
     }
