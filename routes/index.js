@@ -23,7 +23,7 @@ mainRouter.post('/signin', celebrate({
 }), signIn);
 
 mainRouter.use('/users', auth, usersRouter);
-mainRouter.use('/articles', articlesRouter);
+mainRouter.use('/articles', auth, articlesRouter);
 
 mainRouter.get('/*', (req, res, next) => {
   next(new NotFoundError('Requested resource not found'));
